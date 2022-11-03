@@ -4,8 +4,8 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         console.log(dataset)
 
         var dimensions = {
-            width: 1200,
-            height: 600,
+            width: 1500,
+            height: 700,
             margin:{
                 top: 10,
                 bottom: 50,
@@ -14,29 +14,37 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             }
         }
         var svg = d3.select("#RottenTomatoes")
-        .style("width", dimensions.width)
-        .style("height", dimensions.height)
+            .style("width", dimensions.width)
+            .style("height", dimensions.height)
+
+        console.log(dataset[9].original_release_date.substring(5, 9))
 
         var xScale = d3.scaleBand()
-        console.log(d3.map(dataset, d => +d.original_release_date))
-        .domain(d3.map(dataset, d => +d.original_release_date))// - note for jenna
-        .range([dimensions.margin.left ,dimensions.width - dimensions.margin.right])
-        .padding([0.2])
+            .domain(d3.map(dataset, d => +d.original_release_date.substring(5, 9))) // label by year
+            .range([dimensions.margin.left ,dimensions.width - dimensions.margin.right])
+            .padding([0.3])
+
 
 
         var yScale = d3.scaleLinear()
-        .domain([0, 100])
-        .range([dimensions.height-dimensions.margin.bottom, dimensions.margin.top])
+            .domain([0, 100]) // score is normally on a scale of 0-100
+            .range([dimensions.height-dimensions.margin.bottom, dimensions.margin.top])
 
 
         var xAxisGen = d3.axisBottom(xScale)
+            // .scale(xScale)
+            // .tickValues(xScale.domain().filter(function(d,i){ return !(i%5)})) // xAxis is every 5 years
+            // in order to do this the dataset needs to be cleaned up 04/17/1996 instead of 4/17/1996
+
+
         var yAxisGen = d3.axisLeft(yScale)
+            
 
         var xAxisValue = "Year"
 
     svg.append('g')
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + (dimensions.height- dimensions.margin.bottom) + ")")
+        .attr("transform", "translate(0, " + (dimensions.height - dimensions.margin.bottom) + ")")
         .call(xAxisGen)
         .selectAll("text")
         .style("text-anchor", "end")
