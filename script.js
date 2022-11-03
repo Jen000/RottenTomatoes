@@ -20,7 +20,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         console.log(dataset[9].original_release_date.substring(5, 9))
 
         var xScale = d3.scaleBand()
-            .domain(d3.map(dataset, d => +d.original_release_date.substring(5, 9))) // label by year
+            .domain(d3.map(dataset, d => +d.original_release_date.substring(0, 3))) // label by year
             .range([dimensions.margin.left ,dimensions.width - dimensions.margin.right])
             .padding([0.3])
 
