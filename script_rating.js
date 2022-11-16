@@ -18,9 +18,11 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .style("height", dimensions.height)
 
         console.log(dataset[9].original_release_date.substring(5, 9))
+
+        var groups = ["G","PG","PG-13","R","NC-17","NR"]
 //d3.map(dataset, d=>d.content_rating)
         var xScale = d3.scaleBand()
-            .domain(["G","PG","PG-13","R","NC-17","NR"]) // label by Rating
+            .domain(d3.map(dataset, d=>d.content_rating)) // label by Rating
             .range([dimensions.margin.left ,dimensions.width - dimensions.margin.right])
             .padding([0.3])
         console.log(xScale.domain())
@@ -30,15 +32,12 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .range([dimensions.height-dimensions.margin.bottom, dimensions.margin.top])
 
         var xAxisGen = d3.axisBottom(xScale)
-            // .scale(xScale)
-            // .tickValues(xScale.domain().filter(function(d,i){ return !(i%5)})) // xAxis is every 5 years
-            // in order to do this the dataset needs to be cleaned up 04/17/1996 instead of 4/17/1996
-
+                         .scale(xScale)
         var yAxisGen = d3.axisLeft(yScale)
    
         var xAxisValue = "Content Rating"
 
-    svg.append('g')
+    xAxis = svg.append('g')
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + (dimensions.height - dimensions.margin.bottom) + ")")
         .call(xAxisGen)
@@ -47,7 +46,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .attr("transform", "rotate(0)")
         
     svg.append("text")
-        .attr("y", dimensions.height)
+        .attr("y", dimensions.height-15)
         .attr("x", dimensions.width/2)
         .attr("text-anchor","end")
         .attr("stroke", "black")
@@ -72,9 +71,9 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .data(dataset)
         .enter()
         .append("circle")
-        .attr("cx", d => xScale(d.content_rating))
+        .attr("cx", d => xScale(d.content_rating) + 80)
         .attr("cy",  d => yScale(+d.tomatometer_rating))
-        .attr("r", 3)
+        .attr("r", 2.5)
         .attr("fill", "black")
     console.log(dots)
 
