@@ -1,4 +1,4 @@
-d3.csv("rotten_tomatoes_movies.csv").then(
+d3.csv("rotten_tomatoes_movies_content_rating.csv").then(
     function(dataset){
         
         console.log(dataset)
@@ -66,16 +66,35 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .attr("stroke", "black")
         .text("Rotten Tomatoes Score")
 
+
+    var nodes = []
+    var temp_node = [0,0]
     var dots = svg.append("g")
         .selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle")
-        .attr("cx", d => xScale(d.content_rating) + 80)
-        .attr("cy",  d => yScale(+d.tomatometer_rating))
-        .attr("r", 2.5)
+        .attr("cx", function(d){
+            var x = xScale(d.content_rating) + 80;
+            temp_node = node_arr(x, temp_node, nodes, false);
+            return x;
+        })
+        .attr("cy",  function(d){ 
+            var y = yScale(+d.tomatometer_rating);
+            nodes = node_arr(y, temp_node, nodes, true);
+            return y;
+        })
+        .attr("r", 2.25)
         .attr("fill", "black")
+    console.log(nodes)
     console.log(dots)
+
+    // var layout = d3.forceSimulation(nodes)
+    //           .force('center', d3.forceCenter(width/2, height/2))
+    //           .force('collision', d3.forceCollide().radius(function (d){
+    //             return d.r;
+    //           }))
+    //           .on('tick', ticked)
 
     svg.append("text")
         .attr("x", dimensions.width/2)
@@ -100,6 +119,17 @@ d3.csv("rotten_tomatoes_movies.csv").then(
                 return 5;
             default:
                 break;
+        }
+    }
+
+    function node_arr(val, sub_arr, arr, push_to_arr){
+        if(!push_to_arr){
+            sub_arr[0] = val;
+            return sub_arr;
+        }else{
+            sub_arr[1] = val;
+            arr.push(sub_arr);
+            return arr;
         }
     }
 })
