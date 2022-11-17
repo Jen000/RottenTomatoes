@@ -13,9 +13,9 @@ d3.csv("rotten_tomatoes_movies.csv").then(
                 left: 50
             }
         }
-        var svg = d3.select("#RottenTomatoes")
-            .style("width", dimensions.width)
-            .style("height", dimensions.height)
+    var svg = d3.select("#RottenTomatoes")
+        .style("width", dimensions.width)
+        .style("height", dimensions.height)
 
             
     // create array of ratings per genre

@@ -13,14 +13,14 @@ d3.csv("rotten_tomatoes_movies.csv").then(
                 left: 50
             }
         }
-        var svg = d3.select("#RottenTomatoes")
+        var home = d3.select("#RottenTomatoes")
             .style("width", dimensions.width)
             .style("height", dimensions.height)
 
-        console.log(dataset[9].original_release_date.substring(5, 9))
+        console.log(dataset[9].original_release_date.substring(4, 10))
 
         var xScale = d3.scaleBand()
-            .domain(d3.map(dataset, d => +d.original_release_date.substring(0, 3))) // label by year
+            .domain(d3.map(dataset, d => +d.original_release_date.substring(0, 4))) // label by year
             .range([dimensions.margin.left ,dimensions.width - dimensions.margin.right])
             .padding([0.3])
 
@@ -32,8 +32,8 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
 
         var xAxisGen = d3.axisBottom(xScale)
-            // .scale(xScale)
-            // .tickValues(xScale.domain().filter(function(d,i){ return !(i%5)})) // xAxis is every 5 years
+            .scale(xScale)
+            .tickValues(xScale.domain().filter(function(d,i){ return !(i%5)})) // xAxis is every 5 years
             // in order to do this the dataset needs to be cleaned up 04/17/1996 instead of 4/17/1996
 
 
@@ -42,7 +42,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
         var xAxisValue = "Year"
 
-    svg.append('g')
+    home.append('g')
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + (dimensions.height - dimensions.margin.bottom) + ")")
         .call(xAxisGen)
@@ -50,7 +50,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .style("text-anchor", "end")
         .attr("transform", "rotate(-65)")
         
-    svg.append("text")
+    home.append("text")
         .attr("y", dimensions.height)
         .attr("x", dimensions.width/2)
         .attr("text-anchor","end")
@@ -58,7 +58,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .text(xAxisValue) // CHANGE to by dynamic for x-var type
 
 
-    svg.append('g')
+    home.append('g')
         .attr("class", "y axis")
         .attr("transform", "translate(" + (dimensions.margin.left) + ",0)")
         .call(yAxisGen)
@@ -71,16 +71,42 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .attr("stroke", "black")
         .text("Rotten Tomatoes Score")
 
-    svg.append("text")
+    home.append("text")
         .attr("x", dimensions.width/2)
         .attr("y", dimensions.margin.top+10)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
-        .text("Rotten Tomatoes Score vs. " /*+ some dynamic for X-axis val*/);
+        .text("Prototype time");
 
-        // example of how to dynamically change y axis - I assume x would be similar
-        // bars
-        // .attr("y", d => yScale(+d.Amanda))
-        // .attr("height", d => (dimensions.height-dimensions.margin.bottom) - yScale(+d.Amanda))
+
+    function loadScript(url){    
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        head.appendChild(script);
+        }
+
+
+    function changeGraph(){
+        console.log('yoooo')
+        var selected = document.getElementById("filters");
+        var value = selected.options[selected.selectedIndex].value;
+        if (value == 3){
+            console.log('hi')
+            home.selectAll("*").remove();
+            loadScript('genre-script.js');
+        }
+        else if (value == 1){
+            home.selectAll("*").remove();
+            loadScript('script-rating.js');
+        }
+        else{
+            home.selectAll("*").remove();
+            loadScript('script.js');
+        }
+    }    
+
+    d3.select("#filters").on("change", changeGraph )
 
     })
