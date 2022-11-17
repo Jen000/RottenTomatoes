@@ -7,18 +7,21 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
-    <script src="script.js"></script>
+    <script src="genre-script.js"></script>
 
 
     <h1>Rotten Tomatoes Review Prototype</h1>
     <label for="filters">Filter</label>
+    
     <select name="filters" id="filters">
       <option id="Content" value=1>Content</option>
       <option id="Critic-Viewer" value=2>Critic vs Viewer</option>
       <option id="Release-Date" value=3 selected>Release Date</option>
     </select>
       
-    <svg id="RottenTomatoes"></svg>
+    <div id = "rtGraph">
+      <svg id="RottenTomatoes"></svg>
+    </div>
     
 
   

@@ -44,6 +44,8 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         // var based on drop down type
         //var selected = d3.select('input[type="type"]:checked').property("value");
     var avgGenres = []
+    var medGenres = []
+    var percentOf = []
 
     //tomatometer_rating = 14
     var keyRating = dataset.columns[14]
@@ -56,29 +58,39 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             ratings.push(movie[keyRating])
         });
         var sumAvgGenre = d3.mean(ratings)
-        console.log("sum avg: " + sumAvgGenre)
-        avgGenres.push(sumAvgGenre)
+        var med = d3.median(ratings)
+        var perc = (ratings.length/dataset.length) * 100
+        avgGenres.push(Number(sumAvgGenre.toFixed(2)))
+        medGenres.push(med)
+        percentOf.push(Number(perc.toFixed(2)))
 
     });
 
+    var sum = 0
+    percentOf.forEach(thing => {
+        sum += thing
+    })
+
+    console.log("sum: " + sum)
+
     newdata = [
-        {genre: 'Action & Adventure', ranking: avgGenres[0]},
-        {genre: 'Animation', ranking: avgGenres[1]},
-        {genre: 'Anime & Manga', ranking: avgGenres[2]},
-        {genre: 'Art House & International', ranking: avgGenres[3]},
-        {genre: 'Classics', ranking: avgGenres[4]},
-        {genre: 'Comedy', ranking: avgGenres[5]},
-        {genre: 'Cult Movies', ranking: avgGenres[6]},
-        {genre: 'Drama', ranking: avgGenres[7]},
-        {genre: 'Faith & Spirituality', ranking: avgGenres[8]},
-        {genre: 'Horror', ranking: avgGenres[9]},
-        {genre: 'Kids & Family', ranking: avgGenres[10]},
-        {genre: 'Musical & Performing Arts', ranking: avgGenres[11]},
-        {genre: 'Mystery & Suspense', ranking: avgGenres[12]},
-        {genre: 'Romance', ranking: avgGenres[13]},
-        {genre: 'Science Fiction & Fantasy', ranking: avgGenres[14]},
-        {genre: 'Special Interest', ranking: avgGenres[15]},
-        {genre: 'Western', ranking: avgGenres[16]},
+        {genre: 'Action & Adventure', ranking: avgGenres[0], median: medGenres[0], percent: percentOf[0]},
+        {genre: 'Animation', ranking: avgGenres[1], median: medGenres[1], percent: percentOf[1]},
+        {genre: 'Anime & Manga', ranking: avgGenres[2], median: medGenres[2], percent: percentOf[2]},
+        {genre: 'Art House & International', ranking: avgGenres[3], median: medGenres[3], percent: percentOf[3]},
+        {genre: 'Classics', ranking: avgGenres[4], median: medGenres[4], percent: percentOf[4]},
+        {genre: 'Comedy', ranking: avgGenres[5], median: medGenres[5], percent: percentOf[5]},
+        {genre: 'Cult Movies', ranking: avgGenres[6], median: medGenres[6], percent: percentOf[6]},
+        {genre: 'Drama', ranking: avgGenres[7], median: medGenres[7], percent: percentOf[7]},
+        {genre: 'Faith & Spirituality', ranking: avgGenres[8], median: medGenres[8], percent: percentOf[8]},
+        {genre: 'Horror', ranking: avgGenres[9], median: medGenres[9], percent: percentOf[9]},
+        {genre: 'Kids & Family', ranking: avgGenres[10], median: medGenres[10], percent: percentOf[10]},
+        {genre: 'Musical & Performing Arts', ranking: avgGenres[11], median: medGenres[11], percent: percentOf[11]},
+        {genre: 'Mystery & Suspense', ranking: avgGenres[12], median: medGenres[12], percent: percentOf[12]},
+        {genre: 'Romance', ranking: avgGenres[13], median: medGenres[13], percent: percentOf[13]},
+        {genre: 'Science Fiction & Fantasy', ranking: avgGenres[14], median: medGenres[14], percent: percentOf[14]},
+        {genre: 'Special Interest', ranking: avgGenres[15], median: medGenres[15], percent: percentOf[15]},
+        {genre: 'Western', ranking: avgGenres[16], median: medGenres[16], percent: percentOf[16]},
         // {genre: ['Action & adventure','Animation','Anime & Manga', 'Art House & International', 'Classics', 'Comedy', 'Cult Movies', 'Drama', 'Faith & Spirituality', 'Horror', 'Kids & Family', 'Musical &  Performing Arts', 'Mystery & Suspense', 'Romance', 'Science Fiction & Fantasy', 'Special Interest', 'Western']},
         // {ranking: [avgGenres[0], avgGenres[1], avgGenres[2], avgGenres[3], avgGenres[4], avgGenres[5], avgGenres[6], avgGenres[7], avgGenres[8], avgGenres[9], avgGenres[10], avgGenres[11], avgGenres[12], avgGenres[13], avgGenres[14], avgGenres[15], avgGenres[16]]}
     ]
@@ -100,7 +112,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
         var yAxisGen = d3.axisLeft(yScale)
 
-        var xAxisValue = "Year"
+        var xAxisValue = "Genre"
 
     svg.append('g')
         .attr("class", "x axis")
@@ -139,13 +151,62 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         .text("Rotten Tomatoes Score vs. Genre" /*+ some dynamic for X-axis val*/)
 
 
+    // setting up tooltip and mouseover for interactions
+    
+    var tooltip = d3.select("#rtGraph")
+        .append("div")
+            .style("opacity", 0)
+            .attr("id", "tooltip")
+            .style("background-color", "lightgrey")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+            .style("position", "absolute")
+
+    var mouseover1 = function(d, i) {
+        tooltip
+            .style("opacity", 1)
+        d3.select(this)
+            .style("stroke", "blue")
+            .style("stroke-width", (+i.percent))
+            .style("opacity", 1)
+            console.log((+i.percent))
+    }
+
+    var mousemove1 = function(d, i) {
+        tooltip
+            .style("opacity", 1)
+            .html("Average Rating: " + (+i.ranking) + "<br>Percent of " + (i.genre) + " Movies: " + (i.percent) + "%")
+            .style("left", d3.select(this).attr("cx") + "px")
+            .style("top", d3.select(this).attr("cy") + "px")
+    }
+
+    var mouseleave1 = function(d, i) {
+        tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+        d3.select(this)
+            .style("stroke", "none")
+            .style("stroke-width", 0)
+            .style("opacity", 0.8)
+    }
+
+
     var dots = svg.append("g")
-                    .selectAll("circle")
-                    .data(newdata)
-                    .enter()
-                    .append("circle")
-                    .attr("cx", d => xScale(d.genre))
-                    .attr("cy", d => yScale(+d.ranking))
-                    .attr("r", 3)
-                    .attr("fill", "black")
+        .selectAll("circle")
+        .data(newdata)
+        .enter()
+        .append("circle")
+            .attr("cx", d => xScale(d.genre))
+            .attr("cy", d => yScale(+d.ranking))
+            .attr("r", 4)
+            .attr("fill", "black")
+        .on("mouseover", mouseover1)
+        .on("mousemove", mousemove1)
+        .on("mouseleave", mouseleave1)
+
+    
+
     })
