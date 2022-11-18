@@ -14,3 +14,5 @@ is to create a graph that will let it's viewers answer their own questions about
 - [Jenna Adams](https://www.github.com/jen000)
 - [Asim Bharde](https://www.github.com/asim-bharde)
 - [Owen Petersen](https://www.github.com/owenpetersen)
+
+Please read our Journal above to see how the process is going!
