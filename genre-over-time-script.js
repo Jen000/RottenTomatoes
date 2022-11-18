@@ -39,17 +39,57 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
     sortedData = [aAndaArray, animation, aAndM, aHAndI, classics, comedy, cultMovies, drama, fAndR, horror, kAndF, mAndPA, mAndS, romance, sfAndF, special, western]
 
+    var original_release_date = 9
 
     console.log(sortedData)
         // var based on drop down type
         //var selected = d3.select('input[type="type"]:checked').property("value");
+    var avgRankOfGenrePerYear = []
+
+    sortedData.forEach(genre => {
+        var perYear = []
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1914) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1926) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1936) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1946) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1956) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1966) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1976) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1986) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(1996) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(2006) }))
+        perYear.push(genre.filter(function(d){ return d.original_release_date.includes(2016) }))
+        avgRankOfGenrePerYear.push(perYear)
+    });
+
+    var keyRating = dataset.columns[14]
+    var yearRate = []
+
+    console.log(avgRankOfGenrePerYear)
+    avgRankOfGenrePerYear.forEach(genre => {
+        var avg = []
+        genre.forEach(year =>{
+            var thisYear = []
+            // console.log("typing stuff")
+            // console.log(year)
+            year.forEach(movie => {
+                console.log(movie[keyRating])
+                thisYear.push(movie[keyRating])
+            })
+            var yearRatings = d3.mean(thisYear)
+            avg.push(yearRatings)  
+        })
+        yearRate.push(avg)
+    })
+
+    console.log(yearRate)
+
+
     var avgGenres = []
     var medGenres = []
     var percentOf = []
     var countOf = []
 
-    //tomatometer_rating = 14
-    var keyRating = dataset.columns[14]
     
     console.log(sortedData[0][0][keyRating])
 
@@ -76,32 +116,32 @@ d3.csv("rotten_tomatoes_movies.csv").then(
     console.log("sum: " + sum)
 
     newdata = [
-        {genre: 'Action & Adventure', ranking: avgGenres[0], median: medGenres[0], percent: percentOf[0], count: countOf[0]},
-        {genre: 'Animation', ranking: avgGenres[1], median: medGenres[1], percent: percentOf[1], count: countOf[1]},
-        {genre: 'Anime & Manga', ranking: avgGenres[2], median: medGenres[2], percent: percentOf[2], count: countOf[2]},
-        {genre: 'Art House & International', ranking: avgGenres[3], median: medGenres[3], percent: percentOf[3], count: countOf[3]},
-        {genre: 'Classics', ranking: avgGenres[4], median: medGenres[4], percent: percentOf[4], count: countOf[4]},
-        {genre: 'Comedy', ranking: avgGenres[5], median: medGenres[5], percent: percentOf[5], count: countOf[5]},
-        {genre: 'Cult Movies', ranking: avgGenres[6], median: medGenres[6], percent: percentOf[6], count: countOf[6]},
-        {genre: 'Drama', ranking: avgGenres[7], median: medGenres[7], percent: percentOf[7], count: countOf[7]},
-        {genre: 'Faith & Spirituality', ranking: avgGenres[8], median: medGenres[8], percent: percentOf[8], count: countOf[8]},
-        {genre: 'Horror', ranking: avgGenres[9], median: medGenres[9], percent: percentOf[9], count: countOf[9]},
-        {genre: 'Kids & Family', ranking: avgGenres[10], median: medGenres[10], percent: percentOf[10], count: countOf[10]},
-        {genre: 'Musical & Performing Arts', ranking: avgGenres[11], median: medGenres[11], percent: percentOf[11], count: countOf[11]},
-        {genre: 'Mystery & Suspense', ranking: avgGenres[12], median: medGenres[12], percent: percentOf[12], count: countOf[12]},
-        {genre: 'Romance', ranking: avgGenres[13], median: medGenres[13], percent: percentOf[13], count: countOf[13]},
-        {genre: 'Science Fiction & Fantasy', ranking: avgGenres[14], median: medGenres[14], percent: percentOf[14], count: countOf[14]},
-        {genre: 'Special Interest', ranking: avgGenres[15], median: medGenres[15], percent: percentOf[15], count: countOf[15]},
-        {genre: 'Western', ranking: avgGenres[16], median: medGenres[16], percent: percentOf[16], count: countOf[16]},
+        {genre: 'Action & Adventure', ranking: avgGenres[0], median: medGenres[0], percent: percentOf[0], count: countOf[0], decades: yearRate[0]},
+        {genre: 'Animation', ranking: avgGenres[1], median: medGenres[1], percent: percentOf[1], count: countOf[1], decades: yearRate[1]},
+        {genre: 'Anime & Manga', ranking: avgGenres[2], median: medGenres[2], percent: percentOf[2], count: countOf[2], decades: yearRate[2]},
+        {genre: 'Art House & International', ranking: avgGenres[3], median: medGenres[3], percent: percentOf[3], count: countOf[3], decades: yearRate[3]},
+        {genre: 'Classics', ranking: avgGenres[4], median: medGenres[4], percent: percentOf[4], count: countOf[4], decades: yearRate[4]},
+        {genre: 'Comedy', ranking: avgGenres[5], median: medGenres[5], percent: percentOf[5], count: countOf[5], decades: yearRate[5]},
+        {genre: 'Cult Movies', ranking: avgGenres[6], median: medGenres[6], percent: percentOf[6], count: countOf[6], decades: yearRate[6]},
+        {genre: 'Drama', ranking: avgGenres[7], median: medGenres[7], percent: percentOf[7], count: countOf[7], decades: yearRate[7]},
+        {genre: 'Faith & Spirituality', ranking: avgGenres[8], median: medGenres[8], percent: percentOf[8], count: countOf[8], decades: yearRate[8]},
+        {genre: 'Horror', ranking: avgGenres[9], median: medGenres[9], percent: percentOf[9], count: countOf[9], decades: yearRate[9]},
+        {genre: 'Kids & Family', ranking: avgGenres[10], median: medGenres[10], percent: percentOf[10], count: countOf[10], decades: yearRate[10]},
+        {genre: 'Musical & Performing Arts', ranking: avgGenres[11], median: medGenres[11], percent: percentOf[11], count: countOf[11], decades: yearRate[11]},
+        {genre: 'Mystery & Suspense', ranking: avgGenres[12], median: medGenres[12], percent: percentOf[12], count: countOf[12], decades: yearRate[12]},
+        {genre: 'Romance', ranking: avgGenres[13], median: medGenres[13], percent: percentOf[13], count: countOf[13], decades: yearRate[13]},
+        {genre: 'Science Fiction & Fantasy', ranking: avgGenres[14], median: medGenres[14], percent: percentOf[14], count: countOf[14], decades: yearRate[14]},
+        {genre: 'Special Interest', ranking: avgGenres[15], median: medGenres[15], percent: percentOf[15], count: countOf[15], decades: yearRate[15]},
+        {genre: 'Western', ranking: avgGenres[16], median: medGenres[16], percent: percentOf[16], count: countOf[16], decades: yearRate[16]},
         // {genre: ['Action & adventure','Animation','Anime & Manga', 'Art House & International', 'Classics', 'Comedy', 'Cult Movies', 'Drama', 'Faith & Spirituality', 'Horror', 'Kids & Family', 'Musical &  Performing Arts', 'Mystery & Suspense', 'Romance', 'Science Fiction & Fantasy', 'Special Interest', 'Western']},
         // {ranking: [avgGenres[0], avgGenres[1], avgGenres[2], avgGenres[3], avgGenres[4], avgGenres[5], avgGenres[6], avgGenres[7], avgGenres[8], avgGenres[9], avgGenres[10], avgGenres[11], avgGenres[12], avgGenres[13], avgGenres[14], avgGenres[15], avgGenres[16]]}
     ]
 
-    console.log(newdata)
+    console.log(newdata.decades)
 
 
         var xScale = d3.scalePoint()
-            .domain(d3.map(newdata, d => d.genre)) // label by year
+            .domain(d3.map(dataset, d => +d.original_release_date.substring(0, 4))) // label by year
             .range([dimensions.margin.left, dimensions.width - dimensions.margin.right])
             .padding([0.3])
 
@@ -111,10 +151,11 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
         var xAxisGen = d3.axisBottom(xScale)
             .scale(xScale)
+            .tickValues(xScale.domain().filter(function(d,i){ return !(i%10)}))
 
         var yAxisGen = d3.axisLeft(yScale)
 
-        var xAxisValue = "Genre"
+        var xAxisValue = "Year"
 
     svg.append('g')
         .attr("class", "x axis")
@@ -173,7 +214,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .style("stroke", "blue")
             .style("stroke-width", (+i.percent))
             .style("opacity", 1)
-            console.log((+i.percent))
+            console.log((i))
     }
 
     var mousemove1 = function(d, i) {
@@ -198,11 +239,11 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
     var dots = svg.append("g")
         .selectAll("circle")
-        .data(newdata)
+        .data(newdata.decades)
         .enter()
         .append("circle")
-            .attr("cx", d => xScale(d.genre))
-            .attr("cy", d => yScale(+d.ranking))
+            .attr("cx", xScale(dataset.original_release_date.substring(0, 4)))
+            .attr("cy", d => yScale(d.decades))
             .attr("r", 4)
             .attr("fill", "black")
         .on("mouseover", mouseover1)
