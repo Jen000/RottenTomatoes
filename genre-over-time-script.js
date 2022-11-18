@@ -85,6 +85,17 @@ d3.csv("rotten_tomatoes_movies.csv").then(
     console.log(yearRate)
 
 
+    yearRate.forEach(genre => {
+        genre.forEach(decade => {
+            if (decade === undefined) {
+                genre.decade = '0'
+                console.log(genre.decade)
+            }
+            
+        })
+    })
+
+
     var avgGenres = []
     var medGenres = []
     var percentOf = []
@@ -115,9 +126,10 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
     console.log("sum: " + sum)
 
+
     newdata = [
-        {genre: 'Action & Adventure', ranking: avgGenres[0], median: medGenres[0], percent: percentOf[0], count: countOf[0], decades: yearRate[0]},
-        {genre: 'Animation', ranking: avgGenres[1], median: medGenres[1], percent: percentOf[1], count: countOf[1], decades: yearRate[1]},
+        {genre: 'Action & Adventure', decade10: yearRate[0][0], decade20: yearRate[1][0], decade30: yearRate[2][0], decades: yearRate[3][0], decades: yearRate[4][0], decades: yearRate[5][0], decades: yearRate[6][0], decades: yearRate[7][0], decades: yearRate[8][0], decades: yearRate[9][0], decades: yearRate[10][0]},
+        {genre: 'Animation', decade10: yearRate[1][0], decade20: yearRate[1][1], decade30: yearRate[1][2], decades: yearRate[1][3], decades: yearRate[1][4], decades: yearRate[1][5], decades: yearRate[1][6], decades: yearRate[1][7], decades: yearRate[1][8], decades: yearRate[1][9], decades: yearRate[1][10]},
         {genre: 'Anime & Manga', ranking: avgGenres[2], median: medGenres[2], percent: percentOf[2], count: countOf[2], decades: yearRate[2]},
         {genre: 'Art House & International', ranking: avgGenres[3], median: medGenres[3], percent: percentOf[3], count: countOf[3], decades: yearRate[3]},
         {genre: 'Classics', ranking: avgGenres[4], median: medGenres[4], percent: percentOf[4], count: countOf[4], decades: yearRate[4]},
@@ -137,7 +149,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         // {ranking: [avgGenres[0], avgGenres[1], avgGenres[2], avgGenres[3], avgGenres[4], avgGenres[5], avgGenres[6], avgGenres[7], avgGenres[8], avgGenres[9], avgGenres[10], avgGenres[11], avgGenres[12], avgGenres[13], avgGenres[14], avgGenres[15], avgGenres[16]]}
     ]
 
-    console.log(newdata.decades)
+    console.log(newdata)
 
 
         var xScale = d3.scalePoint()
@@ -237,13 +249,26 @@ d3.csv("rotten_tomatoes_movies.csv").then(
     }
 
 
-    var dots = svg.append("g")
+    var action = svg.append("g")
         .selectAll("circle")
-        .data(newdata.decades)
+        .data(newdata)
         .enter()
         .append("circle")
-            .attr("cx", xScale(dataset.original_release_date.substring(0, 4)))
-            .attr("cy", d => yScale(d.decades))
+            .attr("cx", xScale(1914))
+            .attr("cy", d => yScale(+d.decade10))
+            .attr("r", 4)
+            .attr("fill", "black")
+        .on("mouseover", mouseover1)
+        .on("mousemove", mousemove1)
+        .on("mouseleave", mouseleave1)
+
+        var dots20 = svg.append("g")
+        .selectAll("circle")
+        .data(newdata)
+        .enter()
+        .append("circle")
+            .attr("cx", xScale(1926))
+            .attr("cy", d => yScale(+d.decade20))
             .attr("r", 4)
             .attr("fill", "black")
         .on("mouseover", mouseover1)
