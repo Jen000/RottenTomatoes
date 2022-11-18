@@ -116,6 +116,9 @@ d3.csv("rotten_tomatoes_movies.csv").then(
 
         var xAxisValue = "Genre"
 
+        var myColor = d3.scaleOrdinal().domain(dataset)
+            .range(d3.schemeSet1);
+
     svg.append('g')
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + (dimensions.height - dimensions.margin.bottom) + ")")
@@ -170,10 +173,10 @@ d3.csv("rotten_tomatoes_movies.csv").then(
         tooltip
             .style("opacity", 1)
         d3.select(this)
-            .style("stroke", "blue")
-            .style("stroke-width", (+i.percent))
+            .style("stroke", function(d){return myColor(d)})
+            .style("stroke-width", (+i.percent)*2)
             .style("opacity", 1)
-            console.log((+i.percent))
+            console.log((+i.percent)*2)
     }
 
     var mousemove1 = function(d, i) {
@@ -204,7 +207,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .attr("cx", d => xScale(d.genre))
             .attr("cy", d => yScale(+d.ranking))
             .attr("r", 4)
-            .attr("fill", "black")
+            .attr("fill", function(d){return myColor(d)})
         .on("mouseover", mouseover1)
         .on("mousemove", mousemove1)
         .on("mouseleave", mouseleave1)
