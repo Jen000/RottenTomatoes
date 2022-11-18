@@ -193,7 +193,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .duration(200)
             .style("opacity", 0)
         d3.select(this)
-            .style("stroke", "none")
+            .style("stroke", "black")
             .style("stroke-width", 0)
             .style("opacity", 0.8)
     }
@@ -207,7 +207,7 @@ d3.csv("rotten_tomatoes_movies.csv").then(
             .attr("cx", d => xScale(d.genre))
             .attr("cy", d => yScale(+d.ranking))
             .attr("r", 4)
-            .attr("fill", function(d){return myColor(d)})
+            .attr("fill", "black")
         .on("mouseover", mouseover1)
         .on("mousemove", mousemove1)
         .on("mouseleave", mouseleave1)
