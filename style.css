@@ -1,0 +1,11 @@
+
+
+.grid-container-element { 
+    display: grid; 
+    grid-template-columns: 2fr 2fr 2fr; 
+    grid-gap: 10px;  
+    width: 100%; 
+} 
+.grid-child-element { 
+    margin: 5px; 
+}

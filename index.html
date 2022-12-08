@@ -5,23 +5,65 @@
     <meta charset="UTF-8"/>
     <title>Rotten Tomatoes Data Visualization</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Load d3-cloud -->
+    <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <script src="genre-script.js"></script>
+    <script src="Script.js"></script>
 
 
-    <h1>Rotten Tomatoes Review Prototype</h1>
-    <label for="filters">Filter</label>
-    
-    <select name="filters" id="filters">
-      <option id="Content" value=1>Content</option>
-      <option id="Critic-Viewer" value=2>Critic vs Viewer</option>
-      <option id="Release-Date" value=3 selected>Release Date</option>
-    </select>
-      
-    <div id = "rtGraph">
-      <svg id="RottenTomatoes"></svg>
+    <h3>Rotten Tomatoes Review Prototype</h3>
+
+    <div class="grid-container-element">
+      <div class="grid-child-element genre">
+        <label for="Genres">Genres:</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-1" value="Action" id="check-1" checked >
+        <label for="check-1">Action & Adventure</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-2" value="Animation" id="check-2">
+        <label for="check-2">Animation</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-3" value="Anime" id="check-3">
+        <label for="check-3">Anime & Manga</label><div></div>
+      <input type="checkbox"class="checkbox"  name="check-4" value="Art" id="check-4">
+        <label for="check-4">International</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-5" value="Classics" id="check-5">
+        <label for="check-5">Classics</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-6" value="Comedy" id="check-6">
+        <label for="check-6">Comedy</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-7" value="Cult" id="check-7">
+        <label for="check-7">Cult Movies</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-8" value="Drama" id="check-8">
+        <label for="check-8">Drama</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-9" value="Faith" id="check-9">
+        <label for="check-9">Faith & Spirituality</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-10" value="Horror" id="check-10">
+        <label for="check-10">Horror</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-11" value="Kids" id="check-11">
+        <label for="check-11">Kids & Family</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-12" value="Musical" id="check-12">
+        <label for="check-12">Performing Arts</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-13" value="Mystery" id="check-13">
+        <label for="check-13">Mystery & Suspense</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-14" value="Romance" id="check-14">
+        <label for="check-14">Romance</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-15" value="Science" id="check-15">
+        <label for="check-15">SciFi & Fantasy</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-16" value="Special" id="check-16">
+        <label for="check-16">Special Interest</label><div></div>
+      <input type="checkbox" class="checkbox" name="check-17" value="Western" id="check-17">
+        <label for="check-17">Western</label><div></div>
+      </div>
+      <div class="grid-child-element green"><svg id="RottenTomatoes"></svg></div>
+      <div class="grid-child-element green"><svg id="RottenTomatoesPop"></svg></div>
+      <div class="grid-child-element green"><svg id="RottenTomatoesstuffs"></svg></div>
+      <div class="grid-child-element green"><svg id="RottenTomatoesmore"></svg></div>
+      <div class="grid-child-element cloud"><svg id="RottenTomatoesCloud"></svg></div>
     </div>
+
+
+    <!-- <div id = "rtGraph">
+      <svg id="RottenTomatoes"></svg>
+    </div> -->
     
 
   
