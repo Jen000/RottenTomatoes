@@ -196,45 +196,72 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
     sorted_rating_data = [content_rating_G, content_rating_PG, content_rating_PG13, content_rating_R, content_rating_NR]
     var content_rating_array = ["G", "PG", "PG-13", "R", "NR"]
+    ////
+    // overall content stuff
 
-    overall_crit_content_ratings= []
-    overall_aud_content_ratings= []
+    function contentGenreData(array){
+        var rating_G = array.filter(function(d){ return d.Content_Rating =="G" })
+        var rating_PG = array.filter(function(d){ return d.Content_Rating =="PG" })
+        var rating_PG13 = array.filter(function(d){ return d.Content_Rating =="PG-13" })
+        var rating_R = array.filter(function(d){ return d.Content_Rating =="R" })
+        var rating_NR = array.filter(function(d){ return d.Content_Rating =="NR" })
 
+        rating_data_per_genre = [rating_G, rating_PG, rating_PG13, rating_R, rating_NR]
 
-    sorted_rating_data.forEach(c_rating => {
-        the_crit_ratings = []
-        the_aud_ratings = []
-        c_rating.forEach(movie => {
-            the_crit_ratings.push(movie[critRating])
-            the_aud_ratings.push(movie[audRating])
+        the_crit_content_ratings= []
+        the_aud_content_ratings= []
+
+        rating_data_per_genre.forEach(c_rating => {
+            the_crit_ratings = []
+            the_aud_ratings = []
+            c_rating.forEach(movie => {
+                the_crit_ratings.push(movie[critRating])
+                the_aud_ratings.push(movie[audRating])
+            })
+            var sumAvgCritGenre = d3.mean(the_crit_ratings)
+            var sumAvgAudGenre = d3.mean(the_aud_ratings)
+            the_crit_content_ratings.push(sumAvgCritGenre)
+            the_aud_content_ratings.push(sumAvgAudGenre)
         })
-        var sumAvgCritGenre = d3.mean(the_crit_ratings)
-        var sumAvgAudGenre = d3.mean(the_aud_ratings)
-        overall_crit_content_ratings.push(sumAvgCritGenre)
-        overall_aud_content_ratings.push(sumAvgAudGenre)
-    })
-    console.log("here")
-    console.log(overall_crit_content_ratings)
-    console.log(overall_aud_content_ratings)
 
-    avg_content_rating_per_content = [
-        {group: "G", critic_score: overall_crit_content_ratings[0], audience_score: overall_aud_content_ratings[0]},
-        {group: "PG", critic_score: overall_crit_content_ratings[1], audience_score: overall_aud_content_ratings[1]},
-        {group: "PG-13", critic_score: overall_crit_content_ratings[2], audience_score: overall_aud_content_ratings[2]},
-        {group: "R", critic_score: overall_crit_content_ratings[3], audience_score: overall_aud_content_ratings[3]},
-        {group: "NR", critic_score: overall_crit_content_ratings[4], audience_score: overall_aud_content_ratings[4]},
-    ]
 
-    // avg_aud_content_rating_per_content = [
-    //     {group: "aud", cr: "G", rating: overall_aud_content_ratings[0]},
-    //     {group: "aud", cr: "PG", rating: overall_aud_content_ratings[1]},
-    //     {group: "aud", cr: "PG-13", rating: overall_aud_content_ratings[2]},
-    //     {group: "aud", cr: "R", rating: overall_aud_content_ratings[3]},
-    //     {group: "aud", cr: "NR", rating: overall_aud_content_ratings[4]}
-    // ]
+        avg_content_rating_per_genre = [
+            {group: "G", critic_score: the_crit_content_ratings[0], audience_score: the_aud_content_ratings[0]},
+            {group: "PG", critic_score: the_crit_content_ratings[1], audience_score: the_aud_content_ratings[1]},
+            {group: "PG-13", critic_score: the_crit_content_ratings[2], audience_score: the_aud_content_ratings[2]},
+            {group: "R", critic_score: the_crit_content_ratings[3], audience_score: the_aud_content_ratings[3]},
+            {group: "NR", critic_score: the_crit_content_ratings[4], audience_score: the_aud_content_ratings[4]}
+        ]
 
-    // console.log(avg_crit_content_rating_per_content)
-    // console.log(avg_aud_content_rating_per_content)
+        return avg_content_rating_per_genre
+    }
+
+    
+    var overall = contentGenreData(dataset)
+    var action_content_data = contentGenreData(aAndaArray)
+    var animation_content_data = contentGenreData(animation)
+    var anime_content_data = contentGenreData(aAndM)
+    var art_content_data = contentGenreData(aHAndI)
+    var classics_content_data = contentGenreData(classics)
+    var comedy_content_data = contentGenreData(comedy)
+    var cult_content_data = contentGenreData(cultMovies)
+    var drama_content_data = contentGenreData(drama)
+    var faith_content_data = contentGenreData(fAndS)
+    var horror_content_data = contentGenreData(horror)
+    var kids_content_data = contentGenreData(kAndF)
+    var musical_content_data = contentGenreData(mAndPA)
+    var mystery_content_data = contentGenreData(mAndS)
+    var romance_content_data = contentGenreData(romance)
+    var science_content_data = contentGenreData(sfAndF)
+    var special_content_data = contentGenreData(special)
+    var western_content_data = contentGenreData(western)
+
+
+
+    
+
+
+
 
     //   // Time
     // var dataTime = d3.range(0, 10).map(function(d) {
@@ -823,27 +850,18 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
                 "translate(" + dimensionsBar.margin.left + "," + dimensionsBar.margin.top + ")");
 
 
-     // List of subgroups = header of the csv files = soil condition here
-
 
     var groups = []
 
-    avg_content_rating_per_content.forEach ( row => {
+    overall.forEach ( row => {
         groups.push(row.group)
-        // console.log(row)
     })
 
-    console.log(groups)
 
   // List of groups = species here = value of the first column called group -> I show them on the X axis
     var subgroups = ['critic_score', 'audience_score']
 
 
-    
-    console.log(subgroups)
-
-    console.log(dimensionsBar.height)
-    console.log(dimensionsBar.width)
 
   // Add X axis
     var x = d3.scaleBand()
@@ -888,25 +906,30 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     // color palette = one color per subgroup
     var color = d3.scaleOrdinal()
         .domain(subgroups)
-        .range(['#e41a1c','#377eb8','#4daf4a'])
+        .range(['#62625d','#cfcfc4'])
 
     // Show the bars
-    bar.append("g")
-        .selectAll("g")
-        // Enter in data = loop group per group
-        .data(avg_content_rating_per_content)
-        .enter()
-        .append("g")
-        .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
-        .selectAll("rect")
-        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-        .enter()
-        .append("rect")
-        .attr("x", function(d) { return xSubgroup(d.key); })
-        .attr("y", function(d) { return y(d.value); })
-        .attr("width", xSubgroup.bandwidth())
-        .attr("height", function(d) { return dimensionsBar.height - y(d.value); })
-        .attr("fill", function(d) { return color(d.key); });
+    function updateBarGraph(data){
+        bar.append("g")
+            .selectAll("g")
+            // Enter in data = loop group per group
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+            .selectAll("rect")
+            .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+            .enter()
+            .append("rect")
+            .attr("x", function(d) { return xSubgroup(d.key); })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("width", xSubgroup.bandwidth())
+            .attr("height", function(d) { return dimensionsBar.height - y(d.value); })
+            .attr("fill", function(d) { return color(d.key); });
+    }
+
+    // initialize bar graph
+    updateBarGraph(overall)
 
 
 
@@ -985,6 +1008,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
 
     d3.selectAll(".checkbox").on('change', changeGraph )
+
 
     changeGraph();
 
