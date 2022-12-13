@@ -1,6 +1,8 @@
 d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     function(dataset){
 
+        console.log(d3)
+
     var dimensions = {
         width: 750,
         height: 375,
@@ -21,7 +23,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     var k = dimensions.height / dimensions.width,
         x0 = d3.extent(dataset, function(d) { return parseTime(d.Original_Release_Date); }),
         y0 = [-4.5 * k, 4.5 * k],
-        xScale = d3.scaleTime().domain(d3.extent(dataset, function(d) { return parseTime(d.Original_Release_Date); })).range([dimensions.margin.left, dimensions.width - dimensions.margin.right])
+        xScale = d3.scaleTime().domain(d3.extent(dataset, function(d) { return parseTime(d.Original_Release_Date); })).range([dimensions.margin.left, dimensions.width - dimensions.margin.right]),
         yScale = d3.scaleLinear().domain([0, 100]).range([dimensions.height-dimensions.margin.bottom, dimensions.margin.top])
 
         console.log(x0)
@@ -32,13 +34,6 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     var brush = d3.brush().on("end", brushended),
         idleTimeout,
         idleDelay = 350;
-
-    // svg.selectAll("dot")
-    //     .data(dataset)
-    //     .enter().append("circle")
-    //         .attr("cx", function(d) { return x(d[0]); })
-    //         .attr("cy", function(d) { return y(d[1]); })
-    //         .attr("r", 2.5)
 
 
 
@@ -67,282 +62,41 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
 
 
-    var actionCheck = document.getElementById("check_1");  
-    var animationCheck = document.getElementById("check-2");
-    var animeCheck = document.getElementById("check-3");  
-    var artCheck = document.getElementById("check-4");
-    var classicsCheck = document.getElementById("check-5");  
-    var comedyCheck = document.getElementById("check-6");
-    var cultCheck = document.getElementById("check-7");  
-    var dramaCheck = document.getElementById("check-8");
-    var faithCheck = document.getElementById("check-9");  
-    var horrorCheck = document.getElementById("check-10");
-    var kidsCheck = document.getElementById("check-11");  
-    var musicalCheck = document.getElementById("check-12");
-    var mysterCheck = document.getElementById("check-13");  
-    var romanceCheck = document.getElementById("check-14");
-    var scienceCheck = document.getElementById("check-15");  
-    var specialCheck = document.getElementById("check-16");
-    var westerCheck = document.getElementById("check-17");
-
-
     // action
-        console.log("actin check")
+    function makeDots(array, className){
     svg.append('g')
         .selectAll("dot")
-        .data(aAndaArray)
+        .data(array)
         .enter()
         .append("circle")
-        .attr("class" , "Action")
+        .attr("class" , className)
         .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
         .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
         .attr("r", 2 )
-        .style("fill", myColor("Action") )
+        .style("fill", myColor(className) )
         .style("opacity", "1")
         .attr("stroke", "black")
         .style("stroke-width", ".5px")
+    }
 
-        // animation
-    svg.append('g')
-        .selectAll("dot")
-        .data(animation)
-        .enter()
-        .append("circle")
-        .attr("class" , "Animation")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Animation") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
+    makeDots(aAndaArray, "Action")
+    makeDots(animation, "Animation")
+    makeDots(aAndM, "Anime")
+    makeDots(aHAndI, "Art")
+    makeDots(classics, "Classics")
+    makeDots(comedy, "Comedy")
+    makeDots(cultMovies, "Cult")
+    makeDots(drama, "Drama")
+    makeDots(fAndS, "Faith")
+    makeDots(horror, "Horror")
+    makeDots(kAndF, "Kids")
+    makeDots(mAndPA, "Musical")
+    makeDots(mAndS, "Mystery")
+    makeDots(romance, "Romance")
+    makeDots(sfAndF, "Science")
+    makeDots(special, "Special")
+    makeDots(western, "Western")
 
-
-        // anime
-    svg.append('g')
-        .selectAll("dot")
-        .data(aAndM)
-        .enter()
-        .append("circle")
-        .attr("class" , "Anime")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Anime") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-
-        // art
-    svg.append('g')
-        .selectAll("dot")
-        .data(aHAndI)
-        .enter()
-        .append("circle")
-        .attr("class" , "Art")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Art") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // classic
-    svg.append('g')
-        .selectAll("dot")
-        .data(classics)
-        .enter()
-        .append("circle")
-        .attr("class" , "Classics")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Classics") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // comedy
-    svg.append('g')
-        .selectAll("dot")
-        .data(comedy)
-        .enter()
-        .append("circle")
-        .attr("class" , "Comedy")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Comedy") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // cult
-    svg.append('g')
-        .selectAll("dot")
-        .data(cultMovies)
-        .enter()
-        .append("circle")
-        .attr("class" , "Cult")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Cult") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // drama
-    svg.append('g')
-        .selectAll("dot")
-        .data(drama)
-        .enter()
-        .append("circle")
-        .attr("class" , "Drama")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Drama") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // faith
-    svg.append('g')
-        .selectAll("dot")
-        .data(fAndS)
-        .enter()
-        .append("circle")
-        .attr("class" , "Faith")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Faith") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // horror
-    svg.append('g')
-        .selectAll("dot")
-        .data(horror)
-        .enter()
-        .append("circle")
-        .attr("class" , "Horror")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Horror") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // kandF
-    svg.append('g')
-        .selectAll("dot")
-        .data(kAndF)
-        .enter()
-        .append("circle")
-        .attr("class" , "Kids")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Kids") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // musical
-    svg.append('g')
-        .selectAll("dot")
-        .data(mAndPA)
-        .enter()
-        .append("circle")
-        .attr("class" , "Musical")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Musical") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // mystery
-    svg.append('g')
-        .selectAll("dot")
-        .data(mAndS)
-        .enter()
-        .append("circle")
-        .attr("class" , "Mystery")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Mystery") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // romance
-    svg.append('g')
-        .selectAll("dot")
-        .data(romance)
-        .enter()
-        .append("circle")
-        .attr("class" , "Romance")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Romance") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // science
-    svg.append('g')
-        .selectAll("dot")
-        .data(sfAndF)
-        .enter()
-        .append("circle")
-        .attr("class" , "Science")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Science") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // special
-    svg.append('g')
-        .selectAll("dot")
-        .data(special)
-        .enter()
-        .append("circle")
-        .attr("class" , "Special")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Special") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
-
-        // western
-    svg.append('g')
-        .selectAll("dot")
-        .data(western)
-        .enter()
-        .append("circle")
-        .attr("class" , "Western")
-        .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-        .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        .attr("r", 2 )
-        .style("fill", myColor("Western") )
-        .style("opacity", "1")
-        .attr("stroke", "black")
-        .style("stroke-width", ".5px")
     
 
 
@@ -353,12 +107,12 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
 
     svg.append("g")
-        .attr("class", "axis axis--x")
+        .attr("class", "axis--x")
         .attr("transform", "translate(0," + (dimensions.height - 10) + ")")
         .call(xAxis);
 
     svg.append("g")
-        .attr("class", "axis axis--y")
+        .attr("class", "axis--y")
         .attr("transform", "translate(10,0)")
         .call(yAxis);
 
@@ -371,29 +125,29 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
     function brushended() {
     var s = d3.event.selection;
-    if (!s) {
-        if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-        xScale.domain(x0);
-        y.domain(y0);
-    } else {
-        xScale.domain([s[0][0], s[1][0]].map(xScale.invert, xScale));
-        yScale.domain([s[1][1], s[0][1]].map(yScale.invert, yScale));
-        svg.select(".brush").call(brush.move, null);
-    }
+        if (!s) {
+            if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
+            xScale.domain(x0);
+            y.domain(y0);
+        } else {
+            xScale.domain([s[0][0], s[1][0]].map(xScale.invert, xScale));
+            yScale.domain([s[1][1], s[0][1]].map(yScale.invert, yScale));
+            svg.select(".brush").call(brush.move, null);
+        }
     zoom();
     }
 
     function idled() {
-    idleTimeout = null;
+        idleTimeout = null;
     }
 
     function zoom() {
-    var t = svg.transition().duration(750);
-    svg.select(".axis--x").transition(t).call(xAxis);
-    svg.select(".axis--y").transition(t).call(yAxis);
-    svg.selectAll("circle").transition(t)
-        .attr("cx", function(d) { return x(d[0]); })
-        .attr("cy", function(d) { return y(d[1]); });
+        var t = svg.transition().duration(750);
+        svg.select(".axis--x").transition(t).call(xAxis);
+        svg.select(".axis--y").transition(t).call(yAxis);
+        svg.selectAll("circle").transition(t)
+            .attr("cx", function(d) { return xScale(parseTime(d.Original_Release_Date)); })
+            .attr("cy", function(d) { return yScale(+d.Tomatometer_Rating); });
     }
 
 
@@ -421,6 +175,42 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         }
       })
     }
+
+      // A function that update the plot for a given xlim value
+  function updatePlot() {
+
+    // Get the value of the button
+    xless = this.value
+    xlim = this.value
+
+    // Update X axis
+    x.domain([xless , xlim])
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+
+    // Update chart
+
+    makeDots(aAndaArray, "Action")
+    makeDots(animation, "Animation")
+    makeDots(aAndM, "Anime")
+    makeDots(aHAndI, "Art")
+    makeDots(classics, "Classics")
+    makeDots(comedy, "Comedy")
+    makeDots(cultMovies, "Cult")
+    makeDots(drama, "Drama")
+    makeDots(fAndS, "Faith")
+    makeDots(horror, "Horror")
+    makeDots(kAndF, "Kids")
+    makeDots(mAndPA, "Musical")
+    makeDots(mAndS, "Mystery")
+    makeDots(romance, "Romance")
+    makeDots(sfAndF, "Science")
+    makeDots(special, "Special")
+    makeDots(western, "Western")
+    
+  }
+
+  // Add an event listener to the button created in the html part
+    d3.select("#buttonXlim").on("input", updatePlot )
 
     d3.selectAll(".checkbox").on('change', changeGraph )
 

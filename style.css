@@ -2,10 +2,12 @@
 
 .grid-container-element { 
     display: grid; 
-    grid-template-columns: 2fr 2fr 2fr; 
-    grid-gap: 10px;  
+    grid-template-columns: 200px 750px 450px; 
+    grid-template-rows: 385px 260px;
+    grid-gap: 20px;  
     width: 100%; 
+    height: 100%;
 } 
 .grid-child-element { 
-    margin: 5px; 
+    margin: 20px; 
 }
