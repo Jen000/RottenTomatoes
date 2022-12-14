@@ -349,67 +349,6 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     //     });
 
 
-       // Add brushing
-    var brush = d3.brushX()                   // Add the brush feature using the d3.brushX function
-        .extent( [ [dimensions.margin.left,0], [dimensions.width - dimensions.margin.right, dimensions.height-dimensions.margin.bottom ] ] )       // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-        .on("end", zoomChart)    // Each time the brush selection changes, trigger the 'zoomChart' function
-
-        
-
-        
-
-    // Add the brushing
-    scatter.append("g")
-        .attr("class", "brush")
-        .call(brush);
-
-
-    // A function that set idleTimeOut to null
-    var idleTimeout
-    function idled() { idleTimeout = null; }
-
-    function zoomChart(event) {
-        
-        var extent = event.selection
-///
-        console.log("hi")
-
-        var timetest = "Sun Jan 24 1999 18:02:56 GMT-0500 (Eastern Standard Time)"
-        var parseTimeStuff = d3.timeParse("%a %b %d %Y %H:%M:%S GMT%Z (Eastern Standard Time)");
-        // console.log(parseTimeStuff(timetest))
-    
-
-
-        // If no selection, back to initial coordinate. Otherwise, update X axis domain
-        if(!extent){
-          if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-          xScale.domain(d3.extent(dataset, parseTime(d.Original_Release_Date)))
-        }
-        else{
-          xScale.domain([ xScale.invert(extent[0]), xScale.invert(extent[1]) ])
-          scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
-        }
-
-        var t = scatter.transition()
-            .duration(750);
-
-        
-        // Update axis and circle position
-        scatter.select(".y axis")
-            .transition(t)
-            .call(xAxisGen);
-
-        scatter.select(".x axis")
-            .transition(t)
-            .call(yAxisGen);
-
-        scatter.selectAll("dot")
-          .transition(t)
-          .duration(1000)
-          .attr("cx", function (d) { return xScale(parseTime(d.Original_Release_Date)); } )
-          .attr("cy", function (d) { return yScale(+d.Tomatometer_Rating); } )
-        
-    }
 
 
 
@@ -444,6 +383,11 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
 
     function cloudy(theString, className){
+
+        cloud.selectAll("text")
+            .remove()
+            .exit()
+            .remove()
 
         var wordCounts = {};
         var words = theString.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
@@ -518,22 +462,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     }
 
     cloudy(ActionString, "Action")
-    cloudy(AnimationString, "Animation")
-    cloudy(AnimeString, "Anime")
-    cloudy(ArtString, "Art")
-    cloudy(ClassicsString, "Classics")
-    cloudy(ComedyString, "Comedy")
-    cloudy(CultString, "Cult")
-    cloudy(DramaString, "Drama")
-    cloudy(FaithString, "Faith")
-    cloudy(HorrorString, "Horror")
-    cloudy(KidsString, "Kids")
-    cloudy(MusicalString, "Musical")
-    cloudy(MysteryString, "Mystery")
-    cloudy(RomanceString, "Romance")
-    cloudy(ScienceString, "Science")
-    cloudy(SpecialString, "Special")
-    cloudy(WesternString, "Western")
+
 
 
     // lollipop graph data
@@ -836,6 +765,54 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         }
     }
 
+
+    // mouse stuff
+    var tooltipBar = d3.select("#RottenTomatoesBarTool")
+    .append("div")
+        .style("opacity", 0)
+        .attr("id", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "2px")
+        .style("padding", "0px")
+        .style("position", "absolute")
+
+    var mouseover2 = function(d, i) {
+    tooltipBar
+        .style("opacity", 1)
+    d3.select(this)
+        .style("stroke-width", 3)
+        
+    }
+
+    var mousemove2 = function(d, i) {
+        var cOrA
+        if (i.key == "audience_score"){
+            cOrA  = "Audience"
+        }
+        else
+            cOrA = "Critic"
+        var num = 0
+            num = parseFloat(+i.value).toFixed(2);
+            tooltipBar
+                .html(cOrA + " Score: " + (num))
+                .style("top", (document.getElementById("RottenTomatoesBarTool").offsetTop +"px"))
+                .style("left", (document.getElementById("RottenTomatoesBarTool").offsetLeft + 550 + "px"))
+    }
+
+    var mouseleave2 = function(d, i) {
+    tooltipBar
+        .transition()
+        .duration(200)
+        .style("opacity", 0)
+    d3.select(this)
+        .style("stroke", "black")
+        .style("stroke-width", 0)
+    }
+
+
+
     dimensionsBar.width = dimensionsBar.width - dimensionsBar.margin.left - dimensionsBar.margin.right
     dimensionsBar.height = dimensionsBar.height - dimensionsBar.margin.top - dimensionsBar.margin.bottom
 
@@ -908,36 +885,64 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .domain(subgroups)
         .range(['#62625d','#cfcfc4'])
 
+    console.log(overall)
+
+    bar.append("g")
+        .selectAll("g")
+        // Enter in data = loop group per group
+        .data(overall)
+        .enter()
+        .append("g")
+        .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+        .selectAll("rect")
+        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return xSubgroup(d.key); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", xSubgroup.bandwidth())
+        .attr("height", function(d) { return dimensionsBar.height - y(d.value); })
+        .attr("stroke", "black")
+        .style("stroke-width", ".5px")
+        .attr("fill", function(d) { return color(d.key); })
+        .on("mouseover", mouseover2)
+        .on("mousemove", mousemove2)
+        .on("mouseleave", mouseleave2)
+
+        
+
     // Show the bars
-    function updateBarGraph(data){
+    function updateBarGraph(data, color){
+
+        bar.selectAll("rect")
+            .remove()
+            .exit()
+            .remove()
+
+        console.log("do we make it here too?")
+        
         bar.append("g")
-            .selectAll("g")
-            // Enter in data = loop group per group
-            .data(data)
-            .enter()
-            .append("g")
-            .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
-            .selectAll("rect")
-            .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-            .enter()
-            .append("rect")
-            .attr("x", function(d) { return xSubgroup(d.key); })
-            .attr("y", function(d) { return y(d.value); })
-            .attr("width", xSubgroup.bandwidth())
-            .attr("height", function(d) { return dimensionsBar.height - y(d.value); })
-            .attr("fill", function(d) { return color(d.key); });
+        .selectAll("g")
+        // Enter in data = loop group per group
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+        .selectAll("rect")
+        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return xSubgroup(d.key); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", xSubgroup.bandwidth())
+        .attr("height", function(d) { return dimensionsBar.height - y(d.value); })
+        .attr("stroke", "black")
+        .style("stroke-width", ".5px")
+        .attr("fill", function(d) { return color(d.key); })
+        .on("mouseover", mouseover2)
+        .on("mousemove", mousemove2)
+        .on("mouseleave", mouseleave2)
     }
-
-    // initialize bar graph
-    updateBarGraph(overall)
-
-
-
-
-
-
-
-
 
 
 
@@ -963,11 +968,6 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
                 .style("opacity", 1)
                 .attr("r", 2)
 
-            cloud.selectAll("."+grp)
-                .transition()
-                .duration(500)
-                .style("opacity", 1)
-
             pop.selectAll("."+grp)
                 .transition()
                 .duration(500)
@@ -982,11 +982,6 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
                 .duration(400)
                 .style("opacity", 0)
                 .attr("r", 0)
-
-            cloud.selectAll("."+grp)
-                .transition()
-                .duration(500)
-                .style("opacity", 0)
 
             pop.selectAll("."+grp)
                 .transition()
@@ -1008,6 +1003,237 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
 
     d3.selectAll(".checkbox").on('change', changeGraph )
+
+
+    // var checkbox = document.querySelector("input[name=checkbox]");
+    // checkbox.addEventListener('change', function() {
+    //     if (this.checked) {
+    //         updateBarGraph(overall)
+    //     }
+    // });
+
+
+    var myColor = d3.scaleOrdinal()
+        .domain(["Action", "Animation", "Anime", "Art", "Classics","Comedy","Cult","Drama","Faith","Horror","Kids","Musical","Mystery","Romance","Science","Special","Western"])
+        .range(d3.schemeSet1);
+        // ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"]
+
+    var lightColor = d3.scaleOrdinal()
+        .domain(["Action", "Animation", "Anime", "Art", "Classics","Comedy","Cult","Drama","Faith","Horror","Kids","Musical","Mystery","Romance","Science","Special","Western"])
+        .range(d3.schemePastel1)
+        //["#fbb4ae","#b3cde3","#ccebc5","#decbe4","#fed9a6","#ffffcc","#e5d8bd","#fddaec","#f2f2f2"]
+
+    var actionColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#e41a1c", "#fbb4ae"])
+
+    var animationColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#377eb8", "#b3cde3"])
+
+    var animeColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#4daf4a", "#ccebc5"])
+
+    var artColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#984ea3", "#decbe4"])
+
+    var classicsColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#ff7f00", "#fed9a6"])
+
+    var comedyColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#ffff33", "#ffffcc"])
+
+    var cultColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#a65628", "#e5d8bd"])
+
+    var dramaColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#f781bf", "#fddaec"])
+
+    var faithColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#999999", "#f2f2f2"])
+
+    var horrorColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#e41a1c", "#fbb4ae"])
+
+    var kidsColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#377eb8", "#b3cde3"])
+
+    var musicalColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#4daf4a", "#ccebc5"])
+
+    var mysteryColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#984ea3", "#decbe4"])
+
+    var romanceColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#ff7f00", "#fed9a6"])
+
+    var scienceColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#ffff33", "#ffffcc"])
+
+    var specialColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#a65628", "#e5d8bd"])
+
+    var westernColorRange = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(["#f781bf", "#fddaec"])
+
+
+
+
+
+
+    var checkbox = document.querySelector("input[name=check-1]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            console.log("yes i'm here")
+            updateBarGraph(action_content_data, actionColorRange)
+            cloudy(ActionString, "Action")
+        }
+        
+    });
+
+    checkbox = document.querySelector("input[name=check-2]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(animation_content_data, animationColorRange)
+            cloudy(AnimationString, "Animation")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-3]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(anime_content_data, animeColorRange)
+            cloudy(AnimeString, "Anime")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-4]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(art_content_data, artColorRange)
+            cloudy(ArtString, "Art")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-5]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(classics_content_data, classicsColorRange)
+            cloudy(ClassicsString, "Classics")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-6]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(comedy_content_data, comedyColorRange)
+            cloudy(ComedyString, "Comedy")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-7]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(cult_content_data, cultColorRange)
+            cloudy(CultString, "Cult")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-8]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(drama_content_data, dramaColorRange)
+            cloudy(DramaString, "Drama")
+        }
+    });
+
+    checkbox = document.querySelector("input[name=check-9]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(faith_content_data, faithColorRange)
+            cloudy(FaithString, "Faith")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-10]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(horror_content_data, horrorColorRange)
+            cloudy(HorrorString, "Horror")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-11]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(kids_content_data, kidsColorRange)
+            cloudy(KidsString, "Kids")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-12]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(musical_content_data, musicalColorRange)
+            cloudy(MusicalString, "Musical")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-13]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(mystery_content_data, mysteryColorRange)
+            cloudy(MysteryString, "Mystery")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-14]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(romance_content_data, romanceColorRange)
+            cloudy(RomanceString, "Romance")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-15]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(science_content_data, scienceColorRange)
+            cloudy(RomanceString, "Science")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-16]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(special_content_data, specialColorRange)
+            cloudy(RomanceString, "Special")
+        }
+    });
+
+    var checkbox = document.querySelector("input[name=check-17]");
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            updateBarGraph(western_content_data, westernColorRange)
+            cloudy(RomanceString, "Western")
+        }
+    });
+
 
 
     changeGraph();
