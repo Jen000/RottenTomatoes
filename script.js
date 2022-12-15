@@ -5,9 +5,9 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
         var dimensions = {
             width: 750,
-            height: 375,
+            height: 385,
             margin:{
-                top: 10,
+                top: 30,
                 bottom: 50,
                 right: 10,
                 left: 50
@@ -41,20 +41,18 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         var xAxisValue = "Year"
 
 
+
+
     svg.append('g')
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + (dimensions.height - dimensions.margin.bottom) + ")")
         .call(xAxisGen)
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("transform", "rotate(-65)")
         
     svg.append("text")
         .attr("y", dimensions.height)
         .attr("x", dimensions.width/2)
         .attr("text-anchor","end")
-        .attr("stroke", "black")
-        .text(xAxisValue) // CHANGE to by dynamic for x-var type
+        .text(xAxisValue) 
 
     svg.append('g')
         .attr("class", "y axis")
@@ -63,26 +61,19 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -(dimensions.height/3))
-        .attr("y", 8)
+        .attr("y", 6)
         .attr("dy", "-5.1em")
         .attr("text-anchor","end")
-        .attr("stroke", "black")
         .text("Rotten Tomatoes Score")
+        .style("font-size", "12px")
 
     svg.append("text")
         .attr("x", dimensions.width/2)
-        .attr("y", dimensions.margin.top+10)
+        .attr("y", dimensions.margin.top - 15)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
-
-          // Add a clipPath: everything out of this area won't be drawn.
-    var clip = svg.append("defs").append("svg:clipPath")
-        .attr("id", "clip")
-        .append("svg:rect")
-        .attr("width", dimensions.width )
-        .attr("height", dimensions.height )
-        .attr("x", 0)
-        .attr("y", 0);
+        .attr("stroke", "black")
+        .text("Critc Scores Over Time");
 
     var scatter = svg.append('g')
         .attr("clip-path", "url(#clip)")
@@ -292,6 +283,47 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     // gTime.call(sliderTime);
 
     // d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+    // mouse stuff
+    var tooltipDot = d3.select("#RottenTomatoesTool")
+    .append("div")
+        .style("opacity", 0)
+        .attr("id", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "2px")
+        .style("padding", "0px")
+        .style("position", "absolute")
+
+
+    var mouseoverDot = function(d, i) {
+        tooltipDot
+            .style("opacity", 1)
+        d3.select(this)
+            .style("stroke-width", 3)
+            
+        }
+    
+    var mousemoveDot = function(d, i) {
+        var title = i.Movie_Title
+        var year = i.Original_Release_Date
+        year = year.slice(0,4)
+            tooltipDot
+                .html(title + ", " + year)
+                .style("top", (document.getElementById("RottenTomatoesTool").offsetTop + "px"))
+                .style("left", (document.getElementById("RottenTomatoesTool").offsetLeft + dimensions.width/2 + dimensions.margin.left*2 + "px"))
+    }
+
+
+    var mouseleaveDot = function(d, i) {
+    tooltipDot
+        .transition()
+        .duration(200)
+        .style("opacity", 0)
+    d3.select(this)
+        .style("stroke", "black")
+        .style("stroke-width", ".5px")
+    }
 
 
     function makeDots(array, className){
@@ -308,6 +340,9 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
             .style("opacity", "1")
             .attr("stroke", "black")
             .style("stroke-width", ".5px")
+            .on("mouseover", mouseoverDot)
+            .on("mousemove", mousemoveDot)
+            .on("mouseleave", mouseleaveDot)
     }
     
     makeDots(aAndaArray, "Action")
@@ -358,9 +393,9 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
     var cloudDimensions = {
         width: 420,
-        height: 190,
+        height: 210,
         margin:{
-            top: 10,
+            top: 20,
             bottom: 10,
             right: 10,
             left: 10
@@ -378,6 +413,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
                 "translate(" + cloudDimensions.margin.left + "," + cloudDimensions.margin.top + ")");
 
 
+// Top Descriptors in the Critics Consensus
 
     // var wordCounts = {};
 
@@ -458,6 +494,14 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
                     return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
                 })
                 .text(function(d) { return d.text; });
+
+            cloud.append("text")
+                .attr("x", cloudDimensions.width/2)
+                .attr("y", cloudDimensions.margin.top - 25)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .text("Top Descriptors")
+                .attr("stroke", "black")
         }
     }
 
@@ -543,9 +587,9 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     // set the dimensions and margins of the graph
     var dimensionsLolli = {
         width: 450,
-        height: 379,
+        height: 389,
         margin:{
-            top: 10,
+            top: 35,
             bottom: 50,
             right: 40,
             left: 80
@@ -577,7 +621,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
 
     // Y axis
     var ypop = d3.scaleBand()
-        .range([ 0, dimensionsLolli.height ])
+        .range([ 0, dimensionsLolli.height-10 ])
         .domain(popdata.map(function(d) { 
             var string = d.genre.split(' ')
             return string[0]; }))
@@ -593,15 +637,21 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .attr("y", 6)
         .attr("dy", "-4.1em")
         .attr("text-anchor","end")
-        .attr("stroke", "black")
         .text("Genre")
 
     pop.append("text")
         .attr("x", dimensionsLolli.width/2+20)
         .attr("y", dimensionsLolli.height+40)
         .attr("text-anchor", "end")
-        .attr("stroke", "black")
         .text("Score Scale")
+
+    pop.append("text")
+        .attr("x", cloudDimensions.width/2-20)
+        .attr("y", cloudDimensions.margin.top - 40)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("Critic vs Audience Avg Movie Scores")
+        .attr("stroke", "black")
 
         
     // mouse stuff
@@ -630,14 +680,14 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
             num = parseFloat(+i.critRanking).toFixed(2);
             tooltip
             .html("Rating: " + (num))
-            .style("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("RottenTomatoesPopTool").offsetTop - 30) +"px")
+            .style("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("RottenTomatoesPopTool").offsetTop) +"px")
             .style("left", (parseInt(d3.select(this).attr("cx"))+ document.getElementById("RottenTomatoesPopTool").offsetLeft + 30) + "px")
         }
         else {
             num = parseFloat(+i.audRanking).toFixed(2);
             tooltip
             .html("Rating: " + (num))
-            .style("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("RottenTomatoesPopTool").offsetTop - 30) +"px")
+            .style("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("RottenTomatoesPopTool").offsetTop) +"px")
             .style("left", (parseInt(d3.select(this).attr("cx"))+ document.getElementById("RottenTomatoesPopTool").offsetLeft + 30) + "px")
         }
     }
@@ -756,9 +806,9 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     // bar graph
     var dimensionsBar = {
         width: 720,
-        height: 250,
+        height: 280,
         margin:{
-            top: 10,
+            top: 30,
             bottom: 40,
             right: 0,
             left: 40
@@ -797,7 +847,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
             num = parseFloat(+i.value).toFixed(2);
             tooltipBar
                 .html(cOrA + " Score: " + (num))
-                .style("top", (document.getElementById("RottenTomatoesBarTool").offsetTop +"px"))
+                .style("top", (document.getElementById("RottenTomatoesBarTool").offsetTop + dimensionsBar.height + dimensionsBar.margin.top + 15 + "px"))
                 .style("left", (document.getElementById("RottenTomatoesBarTool").offsetLeft + 550 + "px"))
     }
 
@@ -808,7 +858,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .style("opacity", 0)
     d3.select(this)
         .style("stroke", "black")
-        .style("stroke-width", 0)
+        .style("stroke-width", ".5px")
     }
 
 
@@ -833,6 +883,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     overall.forEach ( row => {
         groups.push(row.group)
     })
+
 
 
   // List of groups = species here = value of the first column called group -> I show them on the X axis
@@ -860,19 +911,25 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .call(y)
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -(dimensionsLolli.height/2 - dimensionsBar.margin.bottom*2))
+        .attr("x", -(dimensionsBar.height/2 - dimensionsBar.margin.bottom))
         .attr("y", - 30)
         // .attr("dy", "-4.1em")
         .attr("text-anchor","end")
-        .attr("stroke", "black")
-        .text("Genre")
+        .text("Score Scale")
 
     bar.append("text")
         .attr("x", dimensionsBar.width/2 + dimensionsBar.margin.left)
         .attr("y", dimensionsBar.height+30)
         .attr("text-anchor", "end")
+        .text("Content Rating")
+
+    bar.append("text")
+        .attr("x", dimensionsBar.width/2)
+        .attr("y", dimensionsBar.margin.top-40)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("Critic vs Audience Avg Movie Scores Per Content Rating")
         .attr("stroke", "black")
-        .text("Score Scale")
 
     // Another scale for subgroup position?
     var xSubgroup = d3.scaleBand()
@@ -883,14 +940,13 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     // color palette = one color per subgroup
     var color = d3.scaleOrdinal()
         .domain(subgroups)
-        .range(['#62625d','#cfcfc4'])
+        .range(["#e41a1c", "#fbb4ae"])
 
-    console.log(overall)
 
     bar.append("g")
         .selectAll("g")
         // Enter in data = loop group per group
-        .data(overall)
+        .data(action_content_data)
         .enter()
         .append("g")
         .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
