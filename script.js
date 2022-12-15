@@ -58,14 +58,17 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
         .attr("class", "y axis")
         .attr("transform", "translate(" + (dimensions.margin.left) + ",0)")
         .call(yAxisGen)
-        .append("text")
+
+
+    svg.append("text")
+        .call(yAxisGen)
         .attr("transform", "rotate(-90)")
-        .attr("x", -(dimensions.height/3))
-        .attr("y", 6)
-        .attr("dy", "-5.1em")
+        .attr("x", -(dimensions.height/2 - 25))
+        .attr("y", 11)
         .attr("text-anchor","end")
-        .text("Rotten Tomatoes Score")
-        .style("font-size", "12px")
+        .text("Critic Score")
+        .style("fill", "black")
+        .style("font-size", "14px")
 
     svg.append("text")
         .attr("x", dimensions.width/2)
