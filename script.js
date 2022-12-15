@@ -769,7 +769,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     lollipopstuff([popdata[10]], [popdataC[10]], "Kids")
     lollipopstuff([popdata[11]], [popdataC[11]], "Musical")
     lollipopstuff([popdata[12]], [popdataC[12]], "Mystery")
-    lollipopstuff([popdata[13]], [popdataC[12]], "Romance")
+    lollipopstuff([popdata[13]], [popdataC[13]], "Romance")
     lollipopstuff([popdata[14]], [popdataC[14]], "Science")
     lollipopstuff([popdata[15]], [popdataC[15]], "Special")
     lollipopstuff([popdata[16]], [popdataC[16]], "Western")
@@ -1273,7 +1273,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     checkbox.addEventListener('change', function() {
         if (this.checked) {
             updateBarGraph(science_content_data, scienceColorRange)
-            cloudy(RomanceString, "Science")
+            cloudy(ScienceString, "Science")
         }
     });
 
@@ -1281,7 +1281,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     checkbox.addEventListener('change', function() {
         if (this.checked) {
             updateBarGraph(special_content_data, specialColorRange)
-            cloudy(RomanceString, "Special")
+            cloudy(SpecialString, "Special")
         }
     });
 
@@ -1289,7 +1289,7 @@ d3.csv("rotten_tomatoes_movies_rotten_tomatoes_movies.csv").then(
     checkbox.addEventListener('change', function() {
         if (this.checked) {
             updateBarGraph(western_content_data, westernColorRange)
-            cloudy(RomanceString, "Western")
+            cloudy(WesternString, "Western")
         }
     });
 
